@@ -2,7 +2,8 @@
 
 A comprehensive web application for managing personal finances, built with modern web technologies. This application helps users track their income and expenses, manage budgets, and visualize their financial data.
 
-## Technologies Used
+## Live Demo
+🌐 [Live Demo](https://polite-gingersnap-beff64.netlify.app/)
 
 ### Core Technologies
 
