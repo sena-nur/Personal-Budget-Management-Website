@@ -102,19 +102,76 @@ npm run dev
 
 4. Open [http://localhost:3000](http://localhost:3000) in your browser.
 
+
+## Application Screenshots
+
+### Dashboard View
+![image](https://github.com/user-attachments/assets/3b0d524c-c3c1-4d41-be98-5b5241f44c5f)
+![image](https://github.com/user-attachments/assets/12becd94-b524-40b4-8e21-e19ac0db8485)
+![image](https://github.com/user-attachments/assets/68ccfadc-eaed-46ef-9082-d37160f31b54)
+![image](https://github.com/user-attachments/assets/7ef6c11f-1d7e-442f-9d60-fbe2c39cb552)
+![image](https://github.com/user-attachments/assets/6f8fdc50-0e7e-4fcf-8de8-096ba24dcbd4)
+![image](https://github.com/user-attachments/assets/4cdbc07d-763e-4bf3-9673-b668cff8af15)
+
+### Category Management
+![image](https://github.com/user-attachments/assets/9e9db290-a172-40be-a515-9cbefd1e8f86)
+![image](https://github.com/user-attachments/assets/89a86228-f4ec-4957-88ab-64d6844159e9)
+![image](https://github.com/user-attachments/assets/7e4fc8c0-6238-4250-a3d1-3991d43f577c)
+
+
+### Budget Management Advices
+![image](https://github.com/user-attachments/assets/4914bb1d-cb25-4c4a-a732-149e755f5e80)
+![image](https://github.com/user-attachments/assets/edce04fa-049e-4363-8d0a-bbb9bd1627e6)
+
+
+### Reports
+![image](https://github.com/user-attachments/assets/fa0662f7-00d9-4b7a-a7a2-6d5cbcdf1eb6)
+
+
+
+
+
 ## Project Structure
 
 ```bash
-── app/
-│ ├── components/
-│ │ ├── Advices/
-│ │ ├── Categories/
-│ │ ├── Charts/
-│ │ ├── Hero/
-│ │ ├── PDFReport/
-│ │ ├── Transactions/
-│ │ └── UI/
-│ ├── context/
-│ ├── layout.tsx
-│ └── page.tsx
+src/
+├── app/
+│   ├── components/
+│   │   ├── Advices/
+│   │   │   └── BudgetAdvices.tsx
+│   │   ├── Categories/
+│   │   │   ├── ExpenseCategories.tsx
+│   │   │   └── IncomeCategories.tsx
+│   │   ├── Charts/
+│   │   │   ├── MonthlyExpenseChart.tsx
+│   │   │   ├── MonthlyIncomeChart.tsx
+│   │   │   └── YearlyChart.tsx
+│   │   ├── Hero/
+│   │   │   ├── Hero.tsx
+│   │   │   └── CategoryForm.tsx
+│   │   ├── PDFReport/
+│   │   │   └── Report.tsx
+│   │   ├── Transactions/
+│   │   │   ├── TransactionList.tsx
+│   │   │   ├── TransactionItem.tsx
+│   │   │   └── TransactionForm.tsx
+│   │   └── UI/
+│   │       ├── Alert.tsx
+│   │       ├── DateSelector.tsx
+│   │       ├── Navbar.tsx
+│   │       ├── Pagination.tsx
+│   │       └── Tab.tsx
+│   ├── context/
+│   │   ├── BudgetContext.tsx
+│   │   └── ThemeContext.tsx
+│   ├── fonts/
+│   │   ├── GeistVF.woff
+│   │   └── GeistMonoVF.woff
+│   ├── globals.css
+│   ├── layout.tsx
+│   └── page.tsx
+├── types/
+│   └── index.ts
+├── package.json
+└── README.md
 ```
