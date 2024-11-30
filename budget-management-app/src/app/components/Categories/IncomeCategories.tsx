@@ -21,14 +21,22 @@ export default function IncomeCategories() {
 
   const categoryTotals = incomeCategories.reduce((acc, category) => {
     const total = transactions
-      .filter((t) => t.categoryId === category.id && t.type === "income")
+      .filter((t) => {
+        const transactionDate = new Date(t.date);
+        return (
+          t.categoryId === category.id &&
+          t.type === "income" &&
+          transactionDate.getMonth() === selectedMonth &&
+          transactionDate.getFullYear() === selectedYear
+        );
+      })
       .reduce((sum, t) => sum + t.amount, 0);
     return { ...acc, [category.id]: total };
   }, {} as Record<string, number>);
 
   return (
     <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg">
-      <div className="flex justify-between items-center mb-6">
+      <div className="flex flex-wrap items-center justify-between mb-6 ">
         <h2 className="text-xl font-bold dark:text-white">Gelirler</h2>
         <div className="flex items-center gap-4">
           <div className="flex-shrink-0 mt-4">
@@ -41,10 +49,11 @@ export default function IncomeCategories() {
           </div>
           <button
             onClick={() => setShowAddModal(true)}
-            className="bg-green-500 dark:bg-green-600 
+            className="whitespace-nowrap bg-green-500 dark:bg-green-600 
               hover:bg-green-600 dark:hover:bg-green-700 
               text-white px-4 py-2 rounded-lg 
-              transition-colors h-[40px]"
+              transition-colors h-10 
+              "
           >
             Yeni Kategori Ekle
           </button>
@@ -79,6 +88,8 @@ export default function IncomeCategories() {
       {selectedCategory && (
         <CategoryModal
           category={selectedCategory}
+          selectedMonth={selectedMonth}
+          selectedYear={selectedYear}
           onClose={() => setSelectedCategory(null)}
         />
       )}

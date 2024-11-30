@@ -7,11 +7,15 @@ import TransactionForm from "../Hero/TransactionForm";
 
 interface CategoryModalProps {
   category: Category;
+  selectedMonth: number;
+  selectedYear: number;
   onClose: () => void;
 }
 
 export default function CategoryModal({
   category,
+  selectedMonth,
+  selectedYear,
   onClose,
 }: CategoryModalProps) {
   const { transactions, deleteTransaction, deleteCategory } = useBudget();
@@ -20,8 +24,15 @@ export default function CategoryModal({
     useState<Transaction | null>(null);
 
   // o kategoriye ait işlemleri filtreleme ve tarihe göre sıralama
-  const categoryTransactions = [...transactions]
-    .filter((t) => t.categoryId === category.id)
+  const categoryTransactions = transactions
+    .filter((t) => {
+      const transactionDate = new Date(t.date);
+      return (
+        t.categoryId === category.id &&
+        transactionDate.getMonth() === selectedMonth &&
+        transactionDate.getFullYear() === selectedYear
+      );
+    })
     .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
 
   const handleDeleteCategory = () => {

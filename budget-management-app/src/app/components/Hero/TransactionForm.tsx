@@ -52,34 +52,68 @@ export default function TransactionForm({
       );
       if (!selectedCategory?.limit) return;
 
-      const currentExpenses = transactions
-        .filter(
-          (t) => t.categoryId === selectedCategoryId && t.type === "expense"
-        )
-        .reduce((sum, t) => sum + t.amount, 0);
+      const currentDate = new Date(date);
+      const startOfMonth = new Date(
+        currentDate.getFullYear(),
+        currentDate.getMonth(),
+        1
+      );
+      const endOfMonth = new Date(
+        currentDate.getFullYear(),
+        currentDate.getMonth() + 1,
+        0
+      );
 
+      // Seçili ay için mevcut harcamaları hesapla
+      const currentMonthExpenses = transactions
+        .filter((t) => {
+          const transactionDate = new Date(t.date);
+          return (
+            t.categoryId === selectedCategoryId &&
+            t.type === "expense" &&
+            transactionDate >= startOfMonth &&
+            transactionDate <= endOfMonth
+          );
+        })
+        .reduce((sum, t) => sum + t.amount, 0);
       const existingAmount =
         transaction?.categoryId === selectedCategoryId ? transaction.amount : 0;
-      const newTotal = currentExpenses - existingAmount + Number(amount);
+      const newTotal = currentMonthExpenses + Number(amount);
       const percentage = (newTotal / selectedCategory.limit) * 100;
 
       if (percentage > 100) {
         setAlert({
           show: true,
           type: "error",
-          message: `Limit aşımı! Toplam: ₺${newTotal.toLocaleString()} / Limit: ₺${selectedCategory.limit.toLocaleString()}`,
+          message: `Limit Aşımı!\nKategori Limiti: ₺${selectedCategory.limit.toLocaleString()}\nBu Ayki Toplam: ₺${newTotal.toLocaleString()}\nAşım Miktarı: ₺${(
+            newTotal - selectedCategory.limit
+          ).toLocaleString()}`,
         });
       } else if (percentage >= 80) {
         setAlert({
           show: true,
           type: "warning",
-          message: `Dikkat! Limitin %${percentage.toFixed(0)}'ine ulaştınız.`,
+          message: `Dikkat!\nKategori limitinin %${percentage.toFixed(
+            0
+          )}'ine ulaştınız.\nLimit: ₺${selectedCategory.limit.toLocaleString()}\nBu Ayki Toplam: ₺${newTotal.toLocaleString()}\nKalan: ₺${(
+            selectedCategory.limit - newTotal
+          ).toLocaleString()}`,
         });
       } else {
         setAlert({ show: false, type: "warning", message: "" });
       }
+    } else {
+      setAlert({ show: false, type: "warning", message: "" });
     }
-  }, [amount, selectedCategoryId, categories, transactions, type, transaction]);
+  }, [
+    amount,
+    selectedCategoryId,
+    categories,
+    transactions,
+    type,
+    transaction,
+    date,
+  ]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -126,6 +160,10 @@ export default function TransactionForm({
         message: "İşlem kaydedilirken bir hata oluştu!",
       });
     }
+
+    setTimeout(() => {
+      setShowSuccess({ show: false, message: "" });
+    }, 3000);
   };
 
   return (

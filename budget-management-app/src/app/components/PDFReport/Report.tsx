@@ -48,7 +48,7 @@ const Report = () => {
             />
             <button
               onClick={() => toPDF()}
-              className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition-colors"
+              className="bg-blue-500 text-white px-4 py-2 h-10 mb-4 rounded-lg hover:bg-blue-600 transition-colors"
             >
               PDF İndir
             </button>

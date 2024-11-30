@@ -4,11 +4,11 @@ import { useState } from "react";
 import { useBudget } from "@/context/BudgetContext";
 import CategoryModal from "./CategoryModal";
 import AddCategoryModal from "./AddCategoryModal";
-import { Category, Transaction } from "../../../../types";
+import { Category } from "../../../../types";
 import DateSelector from "../UI/DateSelector";
 
 export default function ExpenseCategories() {
-  const { categories, transactions } = useBudget();
+  const { categories, transactions, updateCategory } = useBudget();
   const [selectedCategory, setSelectedCategory] = useState<Category | null>(
     null
   );
@@ -22,17 +22,32 @@ export default function ExpenseCategories() {
 
   const categoryTotals = expenseCategories.reduce((acc, category) => {
     const total = transactions
-      .filter((t) => t.categoryId === category.id && t.type === "expense")
+      .filter((t) => {
+        const transactionDate = new Date(t.date);
+        return (
+          t.categoryId === category.id &&
+          t.type === "expense" &&
+          transactionDate.getMonth() === selectedMonth &&
+          transactionDate.getFullYear() === selectedYear
+        );
+      })
       .reduce((sum, t) => sum + t.amount, 0);
     return { ...acc, [category.id]: total };
   }, {} as Record<string, number>);
 
   const handleLimitUpdate = (categoryId: string, newLimit: number) => {
-    setEditingLimit(null);
+    const category = categories.find((c) => c.id === categoryId);
+    if (category && category.type === "expense") {
+      updateCategory({
+        ...category,
+        limit: newLimit ? Number(newLimit) : undefined,
+      });
+    }
   };
+
   return (
     <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg">
-      <div className="flex justify-between items-center mb-6">
+      <div className="flex flex-wrap items-center justify-between mb-6">
         <h2 className="text-xl font-bold dark:text-white">Giderler</h2>
         <div className="flex items-center gap-4">
           <div className="flex-shrink-0 mt-4">
@@ -45,9 +60,10 @@ export default function ExpenseCategories() {
           </div>
           <button
             onClick={() => setShowAddModal(true)}
-            className="bg-red-500 dark:bg-red-600 text-white px-4 py-2 rounded-lg 
+            className="whitespace-nowrap bg-red-500 dark:bg-red-600 
               hover:bg-red-600 dark:hover:bg-red-700 
-              transition-colors h-[40px]"
+              text-white px-4 py-2 rounded-lg 
+              transition-colors h-10 "
           >
             Yeni Kategori Ekle
           </button>
@@ -55,6 +71,12 @@ export default function ExpenseCategories() {
       </div>
 
       <div className="space-y-4">
+        {expenseCategories.length === 0 && (
+          <div className="text-center text-gray-500 dark:text-gray-400 py-4">
+            Henüz gider kategorisi bulunmamaktadır.
+          </div>
+        )}
+
         {expenseCategories.map((category) => (
           <div
             key={category.id}
@@ -83,15 +105,17 @@ export default function ExpenseCategories() {
                       border-gray-300 dark:border-gray-500
                       focus:outline-none focus:ring-2 focus:ring-blue-500"
                     defaultValue={category.limit}
-                    onBlur={(e) =>
-                      handleLimitUpdate(category.id, Number(e.target.value))
-                    }
-                    onKeyPress={(e) => {
+                    onBlur={(e) => {
+                      handleLimitUpdate(category.id, Number(e.target.value));
+                      setEditingLimit(null);
+                    }}
+                    onKeyDown={(e) => {
                       if (e.key === "Enter") {
                         handleLimitUpdate(
                           category.id,
                           Number((e.target as HTMLInputElement).value)
                         );
+                        setEditingLimit(null);
                       }
                     }}
                     autoFocus
@@ -133,6 +157,8 @@ export default function ExpenseCategories() {
         <CategoryModal
           category={selectedCategory}
           onClose={() => setSelectedCategory(null)}
+          selectedMonth={selectedMonth}
+          selectedYear={selectedYear}
         />
       )}
 
