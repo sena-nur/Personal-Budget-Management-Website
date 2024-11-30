@@ -21,6 +21,7 @@ export interface BudgetContextType {
   addTransaction: (transaction: Omit<Transaction, "id">) => void;
   deleteTransaction: (id: string) => void;
   deleteCategory: (id: string) => void;
+  updateCategory: (updatedCategory: Category) => void;
   updateTransaction: (id: string, transaction: Omit<Transaction, "id">) => void;
   totalIncome: number;
   totalExpense: number;

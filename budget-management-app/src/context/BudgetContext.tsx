@@ -30,6 +30,16 @@ export function BudgetProvider({ children }: { children: React.ReactNode }) {
     });
   };
 
+  const updateCategory = (updatedCategory: Category) => {
+    setCategories((prev) => {
+      const updated = prev.map((category) =>
+        category.id === updatedCategory.id ? updatedCategory : category
+      );
+      saveToLocalStorage("categories", updated);
+      return updated;
+    });
+  };
+
   const addTransaction = (transaction: Omit<Transaction, "id">) => {
     const newTransaction = { ...transaction, id: crypto.randomUUID() };
     setTransactions((prev) => {
@@ -92,6 +102,7 @@ export function BudgetProvider({ children }: { children: React.ReactNode }) {
         deleteTransaction,
         deleteCategory,
         updateTransaction,
+        updateCategory,
         totalIncome,
         totalExpense,
       }}
